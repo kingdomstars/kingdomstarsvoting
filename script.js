@@ -232,3 +232,4 @@ async function exportExcel() {
   XLSX.utils.book_append_sheet(wb, ws, "Results");
   XLSX.writeFile(wb, "KingdomStarsResults.xlsx");
 }
+console.log("Firebase connected:", firebase.apps.length > 0);
