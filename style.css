@@ -66,3 +66,17 @@ button {
   font-style: italic;
   margin: 8px 0;
 }
+#leaderboard {
+  background: #102a43;
+  padding: 30px;
+}
+
+.leader {
+  background: gold;
+  color: #0b1c2d;
+  margin: 10px auto;
+  padding: 10px;
+  width: 80%;
+  border-radius: 8px;
+  font-weight: bold;
+}
