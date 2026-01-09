@@ -176,3 +176,19 @@ loadFinalResults();
 
     });
 }
+function paidVote(contestantId) {
+  const handler = PaystackPop.setup({
+    key: "PAYSTACK_PUBLIC_KEY",
+    email: "voter@email.com",
+    amount: 500 * 100, // 500 = ₦500 per vote
+    currency: "NGN",
+    ref: "KS_" + Math.floor(Math.random() * 1000000000),
+    callback: function(response) {
+      verifyPayment(response.reference, contestantId);
+    },
+    onClose: function() {
+      alert("Payment cancelled");
+    }
+  });
+  handler.openIframe();
+}
