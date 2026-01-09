@@ -37,3 +37,20 @@ button {
   cursor: pointer;
   font-weight: bold;
 }
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  background: #1e3a5f;
+  padding: 15px;
+  margin: 15px;
+  width: 220px;
+  border-radius: 10px;
+}
+
+.card h3 {
+  margin: 10px 0;
+}
