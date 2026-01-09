@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kingdom Stars Admin</title>
+</head>
+<body>
+  <h1>Admin – Vote Results</h1>
+  <div id="results"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+    db.collection("contestants").onSnapshot(snapshot => {
+      document.getElementById("results").innerHTML = "";
+      snapshot.forEach(doc => {
+        db.collection("votes")
+          .where("contestantId", "==", doc.id)
+          .get()
+          .then(votes => {
+            document.getElementById("results").innerHTML +=
+              `<p>${doc.data().name}: ${votes.size} votes</p>`;
+          });
+      });
+    });
+  </script>
+</body>
+</html>
