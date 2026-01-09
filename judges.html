@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Judges Panel – Kingdom Stars</title>
+</head>
+<body>
+
+<h2>Judges Scoring Panel</h2>
+<div id="judgeList"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="script.js"></script>
+
+<script>
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
+
+db.collection("contestants").onSnapshot(snapshot => {
+  const list = document.getElementById("judgeList");
+  list.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    list.innerHTML += `
+      <div>
+        <strong>${data.name}</strong><br>
+        Judge Score:
+        <input type="number" min="0" max="100"
+          value="${data.judgeScore || 0}"
+          onchange="updateScore('${doc.id}', this.value)">
+        <hr>
+      </div>
+    `;
+  });
+});
+
+function updateScore(id, score) {
+  db.collection("contestants").doc(id).update({
+    judgeScore: Number(score)
+  });
+}
+</script>
+
+</body>
+</html>
