@@ -28,6 +28,26 @@
 </select><br><br>
 
 <button onclick="submitMobileVote()">Submit Vote</button>
+<script>
+function submitMobileVote() {
+  if (!bundle.value || !contestant.value) {
+    msg.innerText = "Please select bundle and contestant";
+    return;
+  }
+
+  db.collection("mobileVotes").add({
+    name: name.value,
+    phone: phone.value,
+    transactionId: txn.value,
+    contestantId: contestant.value,
+    votes: Number(bundle.value),
+    status: "pending",
+    time: new Date()
+  });
+
+  msg.innerText = "Vote submitted. Await confirmation 🙏";
+}
+</script>
 
 <p id="msg"></p>
 
