@@ -30,6 +30,28 @@ function vote(contestantId) {
           deviceId: deviceId,
           time: new Date()
         });
+        // Load contestants
+db.collection("contestants").onSnapshot(snapshot => {
+  document.getElementById("musicContestants").innerHTML = "";
+  document.getElementById("bibleContestants").innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const card = `
+      <div class="card">
+        <h3>${data.name}</h3>
+        <button onclick="vote('${doc.id}')">Vote</button>
+      </div>
+    `;
+
+    if (data.category === "music") {
+      document.getElementById("musicContestants").innerHTML += card;
+    } else if (data.category === "bible") {
+      document.getElementById("bibleContestants").innerHTML += card;
+    }
+  });
+});
+
         alert("Vote successful! God bless you 🙏");
       }
     });
