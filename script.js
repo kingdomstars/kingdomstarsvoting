@@ -46,6 +46,57 @@ db.collection("contestants").onSnapshot(snapshot => {
         <button onclick="vote('${doc.id}')">Vote</button>
       </div>
     `;
+// Live Leaderboard
+function loadLeaderboard() {
+  const musicLeaders = {};
+  const bibleLeaders = {};
+
+  db.collection("votes").onSnapshot(voteSnap => {
+    musicLeaders.clear;
+    bibleLeaders.clear;
+
+    voteSnap.forEach(vote => {
+      const id = vote.data().contestantId;
+
+      if (!musicLeaders[id]) musicLeaders[id] = 0;
+      if (!bibleLeaders[id]) bibleLeaders[id] = 0;
+
+      musicLeaders[id]++;
+      bibleLeaders[id]++;
+    });
+
+    db.collection("contestants").get().then(contSnap => {
+      const music = [];
+      const bible = [];
+
+      contSnap.forEach(doc => {
+        const data = doc.data();
+        const votes = musicLeaders[doc.id] || 0;
+
+        if (data.category === "music") {
+          music.push({ name: data.name, votes });
+        } else if (data.category === "bible") {
+          bible.push({ name: data.name, votes });
+        }
+      });
+
+      music.sort((a, b) => b.votes - a.votes);
+      bible.sort((a, b) => b.votes - a.votes);
+
+      document.getElementById("musicLeaders").innerHTML =
+        music.slice(0, 3).map((c, i) =>
+          `<div class="leader">#${i + 1} ${c.name} – ${c.votes} votes</div>`
+        ).join("");
+
+      document.getElementById("bibleLeaders").innerHTML =
+        bible.slice(0, 3).map((c, i) =>
+          `<div class="leader">#${i + 1} ${c.name} – ${c.votes} votes</div>`
+        ).join("");
+    });
+  });
+}
+
+loadLeaderboard();
 
     if (data.category === "music") {
       document.getElementById("musicContestants").innerHTML += card;
