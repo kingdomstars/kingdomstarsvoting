@@ -1,4 +1,24 @@
 <!DOCTYPE html>
+<h2>⚙️ Voting Controls</h2>
+<button onclick="enableMM()">Enable Mobile Money</button>
+<button onclick="disableMM()">Disable Mobile Money</button>
+
+<script>
+function enableMM() {
+  db.collection("settings").doc("voting").set({
+    mobileMoney: true
+  });
+  alert("Mobile Money Voting ENABLED");
+}
+
+function disableMM() {
+  db.collection("settings").doc("voting").set({
+    mobileMoney: false
+  });
+  alert("Mobile Money Voting DISABLED");
+}
+</script>
+
 <html>
 <head>
   <title>Kingdom Stars Admin</title>
