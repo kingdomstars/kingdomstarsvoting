@@ -1,38 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Admin Login – Kingdom Stars</title>
 </head>
+
 <body>
-  <h2>Admin Login</h2>
 
-  <input type="email" id="email" placeholder="Email"><br><br>
-  <input type="password" id="password" placeholder="Password"><br><br>
+<h1>🔐 Kingdom Stars – Admin Login</h1>
+<p>Authorized access only</p>
 
-  <button onclick="login()">Login</button>
+<hr>
 
-  <p id="msg"></p>
+<input type="email" id="email" placeholder="Email" required><br><br>
+<input type="password" id="password" placeholder="Password" required><br><br>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<button onclick="login()">Login</button>
 
-  <script src="script.js"></script>
+<p id="msg"></p>
 
-  <script>
-    function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+<!-- 🔥 FIREBASE SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => {
-          window.location.href = "admin.html";
-        })
-        .catch(error => {
-          document.getElementById("msg").innerText = error.message;
-        });
-    }
-  </script>
+<!-- 🔧 MAIN CONFIG -->
+<script src="script.js"></script>
+
+<!-- 🔐 LOGIN LOGIC -->
+<script>
+function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    document.getElementById("msg").innerText = "Please enter email and password";
+    return;
+  }
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(() => {
+      window.location.href = "admin.html";
+    })
+    .catch(error => {
+      document.getElementById("msg").innerText = error.message;
+    });
+}
+</script>
+
 </body>
 </html>
