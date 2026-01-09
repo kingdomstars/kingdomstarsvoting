@@ -36,6 +36,12 @@ function disableMM() {
   <body>
   <h1>Admin – Vote Results</h1>
   <div id="results"></div>
+<h2>Export Results</h2>
+<button onclick="exportExcel()">Export to Excel</button>
+<button onclick="exportPDF()">Export to PDF</button>
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
