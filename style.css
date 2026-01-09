@@ -1,21 +1,30 @@
+/* 🌍 GLOBAL */
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   background: #0b1c2d;
-  color: white;
+  color: #ffffff;
   text-align: center;
   margin: 0;
+  padding: 0;
 }
 
+/* 🟡 HEADER */
 header {
-  padding: 30px;
+  padding: 30px 20px;
   background: gold;
   color: #0b1c2d;
 }
 
-.theme {
-  font-style: italic;
+header h1 {
+  margin: 0;
 }
 
+.theme {
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* 🔗 BUTTON LINKS */
 .buttons a {
   display: inline-block;
   margin: 15px;
@@ -24,36 +33,55 @@ header {
   color: white;
   text-decoration: none;
   border-radius: 8px;
+  font-weight: bold;
 }
 
+.buttons a:hover {
+  background: #274d7a;
+}
+
+/* 📦 SECTIONS */
 section {
   margin: 40px 0;
+  padding: 0 15px;
 }
 
+/* 🔘 BUTTONS */
 button {
   padding: 10px 20px;
   background: gold;
   border: none;
   cursor: pointer;
   font-weight: bold;
+  border-radius: 6px;
 }
+
+button:hover {
+  background: #f0c419;
+}
+
+/* 🧩 GRID */
 .grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
+/* 🃏 CONTESTANT CARD */
 .card {
   background: #1e3a5f;
   padding: 15px;
   margin: 15px;
   width: 220px;
   border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .card h3 {
-  margin: 10px 0;
+  margin: 10px 0 5px;
 }
+
+/* 🖼 PHOTO */
 .photo {
   width: 100%;
   height: 200px;
@@ -61,14 +89,17 @@ button {
   border-radius: 8px;
 }
 
+/* 📝 BIO */
 .bio {
   font-size: 14px;
   font-style: italic;
   margin: 8px 0;
 }
+
+/* 🏆 LEADERBOARD */
 #leaderboard {
   background: #102a43;
-  padding: 30px;
+  padding: 30px 15px;
 }
 
 .leader {
@@ -80,9 +111,11 @@ button {
   border-radius: 8px;
   font-weight: bold;
 }
+
+/* 🎯 FINAL RESULTS */
 #finalResults {
   background: #081a2b;
-  padding: 30px;
+  padding: 30px 15px;
 }
 
 .final {
@@ -93,4 +126,16 @@ button {
   width: 85%;
   border-radius: 8px;
   font-weight: bold;
+}
+
+/* 📱 MOBILE RESPONSIVE */
+@media (max-width: 600px) {
+  .card {
+    width: 90%;
+  }
+
+  .leader,
+  .final {
+    width: 95%;
+  }
 }
