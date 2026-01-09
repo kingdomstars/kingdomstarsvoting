@@ -30,16 +30,19 @@ function vote(contestantId) {
           deviceId: deviceId,
           time: new Date()
         });
-        // Load contestants
+       // Load contestants with photos
 db.collection("contestants").onSnapshot(snapshot => {
   document.getElementById("musicContestants").innerHTML = "";
   document.getElementById("bibleContestants").innerHTML = "";
 
   snapshot.forEach(doc => {
     const data = doc.data();
+
     const card = `
       <div class="card">
+        <img src="${data.photo}" alt="${data.name}" class="photo">
         <h3>${data.name}</h3>
+        <p class="bio">${data.bio || ""}</p>
         <button onclick="vote('${doc.id}')">Vote</button>
       </div>
     `;
