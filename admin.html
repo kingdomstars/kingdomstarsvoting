@@ -1,30 +1,16 @@
 <!DOCTYPE html>
-<h2>⚙️ Voting Controls</h2>
-<button onclick="enableMM()">Enable Mobile Money</button>
-<button onclick="disableMM()">Disable Mobile Money</button>
-
-<script>
-function enableMM() {
-  db.collection("settings").doc("voting").set({
-    mobileMoney: true
-  });
-  alert("Mobile Money Voting ENABLED");
-}
-
-function disableMM() {
-  db.collection("settings").doc("voting").set({
-    mobileMoney: false
-  });
-  alert("Mobile Money Voting DISABLED");
-}
-</script>
-
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Kingdom Stars Admin</title>
 </head>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
+<body>
+
+<h1>⚙️ Kingdom Stars – Admin Panel</h1>
+
+<!-- 🔐 AUTH CHECK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
   firebase.auth().onAuthStateChanged(user => {
     if (!user) {
@@ -33,39 +19,72 @@ function disableMM() {
   });
 </script>
 
-  <body>
-  <h1>Admin – Vote Results</h1>
-  <div id="results"></div>
-<h2>Export Results</h2>
+<hr>
+
+<!-- 🔘 VOTING CONTROLS -->
+<h2>⚙️ Voting Controls</h2>
+<button onclick="enableMM()">Enable Mobile Money</button>
+<button onclick="disableMM()">Disable Mobile Money</button>
+
+<hr>
+
+<!-- 📊 RESULTS -->
+<h2>📊 Vote Results</h2>
+<div id="results"></div>
+
+<hr>
+
+<!-- 📤 EXPORT -->
+<h2>📤 Export Results</h2>
 <button onclick="exportExcel()">Export to Excel</button>
 <button onclick="exportPDF()">Export to PDF</button>
 
-<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<hr>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="script.js"></script>
-
-  <script>
-    db.collection("contestants").onSnapshot(snapshot => {
-      document.getElementById("results").innerHTML = "";
-      snapshot.forEach(doc => {
-        db.collection("votes")
-          .where("contestantId", "==", doc.id)
-          .get()
-          .then(votes => {
-            document.getElementById("results").innerHTML +=
-              `<p>${doc.data().name}: ${votes.size} votes</p>`;
-          });
-      });
-    });
-  </script>
-</body>
-</html>
+<!-- 📱 MOBILE MONEY APPROVAL -->
 <h2>📱 Mobile Money Votes (Confirm)</h2>
 <div id="mobileVotes"></div>
 
+<!-- 📚 LIBRARIES -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- 🔧 YOUR MAIN SCRIPT -->
+<script src="script.js"></script>
+
+<!-- 🔘 MOBILE MONEY SWITCH -->
+<script>
+function enableMM() {
+  db.collection("settings").doc("voting").set({ mobileMoney: true });
+  alert("✅ Mobile Money Voting ENABLED");
+}
+
+function disableMM() {
+  db.collection("settings").doc("voting").set({ mobileMoney: false });
+  alert("❌ Mobile Money Voting DISABLED");
+}
+</script>
+
+<!-- 📊 DISPLAY RESULTS -->
+<script>
+db.collection("contestants").onSnapshot(snapshot => {
+  document.getElementById("results").innerHTML = "";
+  snapshot.forEach(doc => {
+    db.collection("votes")
+      .where("contestantId", "==", doc.id)
+      .get()
+      .then(votes => {
+        document.getElementById("results").innerHTML +=
+          `<p><strong>${doc.data().name}</strong>: ${votes.size} votes</p>`;
+      });
+  });
+});
+</script>
+
+<!-- 📱 MOBILE MONEY APPROVAL (BUNDLES) -->
 <script>
 db.collection("mobileVotes")
   .where("status", "==", "pending")
@@ -75,28 +94,34 @@ db.collection("mobileVotes")
       const d = doc.data();
       mobileVotes.innerHTML += `
         <p>
-          ${d.name} – ${d.phone} – ${d.transactionId}
-          <button onclick="approve('${doc.id}', '${d.contestantId}')">Approve</button>
-        </p>
-      `;
-    });
-  });
-
-db.collection("mobileVotes")
-  .where("status", "==", "pending")
-  .onSnapshot(snapshot => {
-    mobileVotes.innerHTML = "";
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      mobileVotes.innerHTML += `
-        <p>
-          ${d.name} – ${d.phone} – ${d.transactionId}
-          <strong>(${d.votes} votes)</strong>
+          <strong>${d.name}</strong> – ${d.phone}<br>
+          TXN: ${d.transactionId}<br>
+          <strong>${d.votes} votes</strong>
           <button onclick="approve('${doc.id}', '${d.contestantId}', ${d.votes})">
             Approve
           </button>
         </p>
+        <hr>
       `;
     });
   });
 
+function approve(id, contestantId, votes) {
+  for (let i = 0; i < votes; i++) {
+    db.collection("votes").add({
+      contestantId: contestantId,
+      paid: true,
+      time: new Date()
+    });
+  }
+
+  db.collection("mobileVotes").doc(id).update({
+    status: "approved"
+  });
+
+  alert("✅ Vote Approved");
+}
+</script>
+
+</body>
+</html>
