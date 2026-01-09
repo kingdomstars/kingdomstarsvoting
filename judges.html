@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Judges Panel – Kingdom Stars</title>
 </head>
+
 <body>
 
-<h2>Judges Scoring Panel</h2>
+<h1>🎯 Kingdom Stars – Judges Panel</h1>
+<p>Please score contestants fairly and prayerfully 🙏</p>
+
+<hr>
+
 <div id="judgeList"></div>
 
+<!-- 🔥 FIREBASE SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- 🔧 MAIN SCRIPT -->
 <script src="script.js"></script>
 
+<!-- 🔐 AUTH + JUDGING LOGIC -->
 <script>
 firebase.auth().onAuthStateChanged(user => {
   if (!user) {
@@ -20,26 +30,39 @@ firebase.auth().onAuthStateChanged(user => {
   }
 });
 
-db.collection("contestants").onSnapshot(snapshot => {
+// Load contestants for judges
+db.collection("contestants").orderBy("name").onSnapshot(snapshot => {
   const list = document.getElementById("judgeList");
   list.innerHTML = "";
 
   snapshot.forEach(doc => {
-    const data = doc.data();
+    const d = doc.data();
     list.innerHTML += `
-      <div>
-        <strong>${data.name}</strong><br>
-        Judge Score:
-        <input type="number" min="0" max="100"
-          value="${data.judgeScore || 0}"
-          onchange="updateScore('${doc.id}', this.value)">
-        <hr>
+      <div style="margin-bottom:15px">
+        <strong>${d.name}</strong><br>
+        <small>${d.category}</small><br><br>
+
+        Judge Score (0–100):<br>
+        <input 
+          type="number" 
+          min="0" 
+          max="100" 
+          value="${d.judgeScore || 0}"
+          onchange="updateScore('${doc.id}', this.value)"
+        >
       </div>
+      <hr>
     `;
   });
 });
 
+// Update score
 function updateScore(id, score) {
+  if (score < 0 || score > 100) {
+    alert("Score must be between 0 and 100");
+    return;
+  }
+
   db.collection("contestants").doc(id).update({
     judgeScore: Number(score)
   });
