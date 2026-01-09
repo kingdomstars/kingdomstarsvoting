@@ -108,5 +108,9 @@ loadLeaderboard();
 
         alert("Vote successful! God bless you 🙏");
       }
+      function calculateFinalScore(publicVotes, judgeScore) {
+  return (publicVotes * 0.5) + (judgeScore * 0.5);
+}
+
     });
 }
