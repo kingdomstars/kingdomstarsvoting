@@ -1,9 +1,3 @@
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-<script src="script.js"></script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +5,7 @@
   <title>Kingdom Stars Voting</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <header>
@@ -22,22 +17,21 @@
 <section class="buttons">
   <a href="#music">🎵 Vote – Music Competition</a>
   <a href="#bible">📖 Vote – Bible Quiz Competition</a>
-  <button onclick="paidVote('ID')">Vote 10nle </button>
 </section>
 
+<!-- 🎵 MUSIC -->
 <section id="music">
   <h2>🎵 Music Competition</h2>
   <div id="musicContestants" class="grid"></div>
 </section>
 
+<!-- 📖 BIBLE -->
 <section id="bible">
   <h2>📖 Bible Quiz Competition</h2>
   <div id="bibleContestants" class="grid"></div>
 </section>
 
-<script src="script.js"></script>
-</body>
-</html>
+<!-- 🏆 LEADERBOARD -->
 <section id="leaderboard">
   <h2>🏆 Live Leaderboard</h2>
 
@@ -47,3 +41,13 @@
   <h3>📖 Bible Quiz Competition</h3>
   <div id="bibleLeaders"></div>
 </section>
+
+<!-- 🔥 FIREBASE SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- 🔧 YOUR MAIN LOGIC -->
+<script src="script.js"></script>
+
+</body>
+</html>
