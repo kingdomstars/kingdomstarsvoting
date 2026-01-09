@@ -192,3 +192,75 @@ function paidVote(contestantId) {
   });
   handler.openIframe();
 }
+// Export results to Excel
+async function exportExcel() {
+  const contSnap = await db.collection("contestants").get();
+  const voteSnap = await db.collection("votes").get();
+
+  const voteCount = {};
+  voteSnap.forEach(vote => {
+    const id = vote.data().contestantId;
+    voteCount[id] = (voteCount[id] || 0) + 1;
+  });
+
+  const data = [];
+  contSnap.forEach(doc => {
+    const d = doc.data();
+    const publicVotes = voteCount[doc.id] || 0;
+    const judgeScore = d.judgeScore || 0;
+    const finalScore = (publicVotes * 0.5) + (judgeScore * 0.5);
+
+    data.push({
+      Name: d.name,
+      Category: d.category,
+      "Public Votes": publicVotes,
+      "Judge Score": judgeScore,
+      "Final Score": finalScore.toFixed(1)
+    });
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "KingdomStarsResults");
+  XLSX.writeFile(workbook, "KingdomStarsResults.xlsx");
+}
+
+// Export results to PDF
+async function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const contSnap = await db.collection("contestants").get();
+  const voteSnap = await db.collection("votes").get();
+
+  const voteCount = {};
+  voteSnap.forEach(vote => {
+    const id = vote.data().contestantId;
+    voteCount[id] = (voteCount[id] || 0) + 1;
+  });
+
+  const rows = [];
+  contSnap.forEach(doc => {
+    const d = doc.data();
+    const publicVotes = voteCount[doc.id] || 0;
+    const judgeScore = d.judgeScore || 0;
+    const finalScore = (publicVotes * 0.5) + (judgeScore * 0.5);
+
+    rows.push([
+      d.name,
+      d.category,
+      publicVotes,
+      judgeScore,
+      finalScore.toFixed(1)
+    ]);
+  });
+
+  doc.text("Kingdom Stars Results", 14, 15);
+  doc.autoTable({
+    head: [["Name", "Category", "Public Votes", "Judge Score", "Final Score"]],
+    body: rows,
+    startY: 20
+  });
+
+  doc.save("KingdomStarsResults.pdf");
+}
