@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Mobile Money Voting – Kingdom Stars</title>
 </head>
+
 <body>
 
-<h2>📱 Vote with Mobile Money</h2>
+<h1>📱 Kingdom Stars – Mobile Money Voting</h1>
 
 <p><strong>Send payment to:</strong></p>
 <ul>
@@ -13,25 +15,66 @@
   <li>🔵 Africell Money: <b>07XXXXXX</b></li>
 </ul>
 
-<p><strong>Amount:</strong> Le 5 (example)</p>
+<hr>
+
+<h3>💰 Select Vote Bundle</h3>
+<select id="bundle">
+  <option value="">Choose bundle</option>
+  <option value="1">Le 5 – 1 Vote</option>
+  <option value="5">Le 20 – 5 Votes</option>
+  <option value="15">Le 50 – 15 Votes</option>
+</select>
 
 <hr>
 
-<h3>Confirm Your Vote</h3>
+<h3>📝 Confirm Your Vote</h3>
 
 <input type="text" id="name" placeholder="Your Name"><br><br>
 <input type="text" id="phone" placeholder="Your Phone Number"><br><br>
 <input type="text" id="txn" placeholder="Transaction ID"><br><br>
 
 <select id="contestant">
-  <option>Select Contestant</option>
+  <option value="">Select Contestant</option>
 </select><br><br>
 
 <button onclick="submitMobileVote()">Submit Vote</button>
+
+<p id="msg"></p>
+
+<!-- 🔥 FIREBASE SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- 🔧 MAIN CONFIG -->
+<script src="script.js"></script>
+
+<!-- 🔐 ADMIN ON/OFF SWITCH -->
+<script>
+db.collection("settings").doc("voting").onSnapshot(doc => {
+  if (!doc.exists || doc.data().mobileMoney !== true) {
+    document.body.innerHTML = "<h2>🚫 Mobile Money Voting is currently closed</h2>";
+  }
+});
+</script>
+
+<!-- 📋 LOAD CONTESTANTS -->
+<script>
+db.collection("contestants").orderBy("name").get().then(snapshot => {
+  const select = document.getElementById("contestant");
+  snapshot.forEach(doc => {
+    const opt = document.createElement("option");
+    opt.value = doc.id;
+    opt.textContent = doc.data().name;
+    select.appendChild(opt);
+  });
+});
+</script>
+
+<!-- ✅ SUBMIT VOTE -->
 <script>
 function submitMobileVote() {
-  if (!bundle.value || !contestant.value) {
-    msg.innerText = "Please select bundle and contestant";
+  if (!name.value || !phone.value || !txn.value || !contestant.value || !bundle.value) {
+    msg.innerText = "⚠️ Please fill all fields";
     return;
   }
 
@@ -45,45 +88,14 @@ function submitMobileVote() {
     time: new Date()
   });
 
-  msg.innerText = "Vote submitted. Await confirmation 🙏";
-}
-</script>
+  msg.innerText = "✅ Vote submitted. Await confirmation 🙏";
 
-<p id="msg"></p>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="script.js"></script>
-<script>
-db.collection("settings").doc("voting").onSnapshot(doc => {
-  if (!doc.exists || doc.data().mobileMoney !== true) {
-    document.body.innerHTML = "<h2>🚫 Mobile Money Voting is currently closed</h2>";
-  }
-});
-</script>
-
-<script>
-db.collection("contestants").get().then(snapshot => {
-  const select = document.getElementById("contestant");
-  snapshot.forEach(doc => {
-    const opt = document.createElement("option");
-    opt.value = doc.id;
-    opt.textContent = doc.data().name;
-    select.appendChild(opt);
-  });
-});
-
-function submitMobileVote() {
-  db.collection("mobileVotes").add({
-    name: name.value,
-    phone: phone.value,
-    transactionId: txn.value,
-    contestantId: contestant.value,
-    status: "pending",
-    time: new Date()
-  });
-
-  msg.innerText = "Vote submitted. Await confirmation 🙏";
+  // Optional: clear form
+  name.value = "";
+  phone.value = "";
+  txn.value = "";
+  contestant.value = "";
+  bundle.value = "";
 }
 </script>
 
