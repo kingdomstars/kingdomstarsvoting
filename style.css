@@ -80,3 +80,17 @@ button {
   border-radius: 8px;
   font-weight: bold;
 }
+#finalResults {
+  background: #081a2b;
+  padding: 30px;
+}
+
+.final {
+  background: #ffffff;
+  color: #0b1c2d;
+  margin: 10px auto;
+  padding: 12px;
+  width: 85%;
+  border-radius: 8px;
+  font-weight: bold;
+}
