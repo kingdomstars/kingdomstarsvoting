@@ -76,15 +76,21 @@ db.collection("mobileVotes")
     });
   });
 
-function approve(id, contestantId) {
-  db.collection("votes").add({
-    contestantId,
-    paid: true,
-    time: new Date()
+db.collection("mobileVotes")
+  .where("status", "==", "pending")
+  .onSnapshot(snapshot => {
+    mobileVotes.innerHTML = "";
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      mobileVotes.innerHTML += `
+        <p>
+          ${d.name} – ${d.phone} – ${d.transactionId}
+          <strong>(${d.votes} votes)</strong>
+          <button onclick="approve('${doc.id}', '${d.contestantId}', ${d.votes})">
+            Approve
+          </button>
+        </p>
+      `;
+    });
   });
 
-  db.collection("mobileVotes").doc(id).update({
-    status: "approved"
-  });
-}
-</script>
