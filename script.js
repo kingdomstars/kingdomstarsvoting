@@ -103,6 +103,68 @@ loadLeaderboard();
     } else if (data.category === "bible") {
       document.getElementById("bibleContestants").innerHTML += card;
     }
+    // Final Results Leaderboard
+function loadFinalResults() {
+  db.collection("votes").onSnapshot(voteSnap => {
+    const voteCount = {};
+
+    voteSnap.forEach(vote => {
+      const id = vote.data().contestantId;
+      voteCount[id] = (voteCount[id] || 0) + 1;
+    });
+
+    db.collection("contestants").get().then(contSnap => {
+      const music = [];
+      const bible = [];
+
+      contSnap.forEach(doc => {
+        const data = doc.data();
+        const publicVotes = voteCount[doc.id] || 0;
+        const judgeScore = data.judgeScore || 0;
+
+        const finalScore =
+          (publicVotes * 0.5) + (judgeScore * 0.5);
+
+        const item = {
+          name: data.name,
+          publicVotes,
+          judgeScore,
+          finalScore
+        };
+
+        if (data.category === "music") {
+          music.push(item);
+        } else if (data.category === "bible") {
+          bible.push(item);
+        }
+      });
+
+      music.sort((a, b) => b.finalScore - a.finalScore);
+      bible.sort((a, b) => b.finalScore - a.finalScore);
+
+      document.getElementById("musicFinal").innerHTML =
+        music.map((c, i) =>
+          `<div class="final">
+            #${i + 1} ${c.name}<br>
+            Public: ${c.publicVotes} | Judges: ${c.judgeScore}<br>
+            <strong>Final Score: ${c.finalScore.toFixed(1)}</strong>
+          </div>`
+        ).join("");
+
+      document.getElementById("bibleFinal").innerHTML =
+        bible.map((c, i) =>
+          `<div class="final">
+            #${i + 1} ${c.name}<br>
+            Public: ${c.publicVotes} | Judges: ${c.judgeScore}<br>
+            <strong>Final Score: ${c.finalScore.toFixed(1)}</strong>
+          </div>`
+        ).join("");
+    });
+  });
+}
+
+loadFinalResults();
+
   });
 });
 
