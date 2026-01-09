@@ -37,3 +37,34 @@
   </script>
 </body>
 </html>
+<h2>📱 Mobile Money Votes (Confirm)</h2>
+<div id="mobileVotes"></div>
+
+<script>
+db.collection("mobileVotes")
+  .where("status", "==", "pending")
+  .onSnapshot(snapshot => {
+    mobileVotes.innerHTML = "";
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      mobileVotes.innerHTML += `
+        <p>
+          ${d.name} – ${d.phone} – ${d.transactionId}
+          <button onclick="approve('${doc.id}', '${d.contestantId}')">Approve</button>
+        </p>
+      `;
+    });
+  });
+
+function approve(id, contestantId) {
+  db.collection("votes").add({
+    contestantId,
+    paid: true,
+    time: new Date()
+  });
+
+  db.collection("mobileVotes").doc(id).update({
+    status: "approved"
+  });
+}
+</script>
